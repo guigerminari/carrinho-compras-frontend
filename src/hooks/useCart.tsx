@@ -13,10 +13,16 @@ interface UpdateProductAmount {
   amount: number;
 }
 
+interface Order {
+  paymentForm: string;
+  cart: Product[];
+}
+
 interface CartContextData {
   cart: Product[];
   addProduct: (productId: number) => Promise<void>;
   removeProduct: (productId: number) => void;
+  finishOrder: (order: Order) => Promise<void>;
   updateProductAmount: ({ productId, amount }: UpdateProductAmount) => void;
 }
 
@@ -54,7 +60,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
       const updateCart = [...cart];
       const productExists = updateCart.find(product => product.id === productId);
 
-      const stock = await api.get(`/stock/${productId}`);
+      const stock = await api.get(`/stock/?id=${productId}`);
 
       const stockAmount = stock.data.amount;
       const currentAmount = productExists ? productExists.amount : 0;
@@ -68,7 +74,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
       if(productExists){
         productExists.amount = amount;
       }else{
-        const product = await api.get(`/products/${productId}`);
+        const product = await api.get(`/products/?id=${productId}`);
 
         const newProduct = {
           ...product.data,
@@ -78,8 +84,6 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
       }
 
       setCart(updateCart);
-
-      
     }catch{
       toast.error('Erro na adição do produto');
     }
@@ -99,6 +103,24 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
     } catch {
       toast.error('Erro na remoção do produto');
+    }
+  };
+
+  const finishOrder = async (order: Order) => {
+    try {
+      console.log(order);
+      const response2 = await api.get('/order');
+      console.log(response2);
+      const response = await api.post('/order/create.php', {"paymentForm": order.paymentForm});
+      
+      if(response.status === 200){
+        setCart([]);
+      }else{
+        toast.error('Erro na finalização do pedido');
+      }
+
+    } catch {
+      toast.error('Erro na finalização do pedido');
     }
   };
 
@@ -137,7 +159,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
   return (
     <CartContext.Provider
-      value={{ cart, addProduct, removeProduct, updateProductAmount }}
+      value={{ cart, addProduct, removeProduct, updateProductAmount, finishOrder }}
     >
       {children}
     </CartContext.Provider>

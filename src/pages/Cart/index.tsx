@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import {
   MdDelete,
   MdAddCircleOutline,
   MdRemoveCircleOutline,
 } from 'react-icons/md';
+import { FinishOrderModal } from '../../components/FinishOrderModal';
 
 import { useCart } from '../../hooks/useCart';
 import { formatPrice } from '../../util/format';
@@ -17,6 +19,16 @@ interface Product {
 }
 
 const Cart = (): JSX.Element => {
+  const [isFinishOrderModalOpen, setIsFinishOrderModalOpen] = useState(false);
+
+  function handleOpenFinishOrderModal(){
+      setIsFinishOrderModalOpen(true);
+  }
+
+  function handleCloseFinishOrderModal(){
+      setIsFinishOrderModalOpen(false);
+  }
+
   const { cart, removeProduct, updateProductAmount } = useCart();
 
   const cartFormatted = cart.map(product => ({
@@ -98,7 +110,7 @@ const Cart = (): JSX.Element => {
               <button
                 type="button"
                 data-testid="remove-product"
-               onClick={() => handleRemoveProduct(product.id)}
+                onClick={() => handleRemoveProduct(product.id)}
               >
                 <MdDelete size={20} />
               </button>
@@ -109,13 +121,16 @@ const Cart = (): JSX.Element => {
       </ProductTable>
 
       <footer>
-        <button type="button">Finalizar pedido</button>
+        <button type="button" onClick={handleOpenFinishOrderModal}>Finalizar pedido</button>
 
         <Total>
           <span>TOTAL</span>
           <strong>{total}</strong>
         </Total>
       </footer>
+      <FinishOrderModal
+        isOpen={isFinishOrderModalOpen}
+        onRequestClose={handleCloseFinishOrderModal} />
     </Container>
   );
 };
