@@ -15,7 +15,7 @@ type FinishOrderProps = {
 
 export function FinishOrderModal({isOpen, onRequestClose}: FinishOrderProps){
     const {finishOrder, cart} = useCart();
-    const [paymentForm, setPaymentForm] = useState('');
+    const [payment_form, setPaymentForm] = useState('');
 
     const cartFormatted = cart.map(product => ({
         ...product,
@@ -30,7 +30,7 @@ export function FinishOrderModal({isOpen, onRequestClose}: FinishOrderProps){
     async function handleFinishOrderComplete(event: FormEvent){
         event.preventDefault();
         await finishOrder({
-            paymentForm,
+            payment_form,
             cart
         });
 
@@ -83,7 +83,7 @@ export function FinishOrderModal({isOpen, onRequestClose}: FinishOrderProps){
                 <input 
                     type="text"
                     placeholder='Forma de Pagamento'
-                    value={paymentForm}
+                    value={payment_form}
                     onChange={event => setPaymentForm(event.target.value)}
                 />
                 <Total>

@@ -14,7 +14,7 @@ interface UpdateProductAmount {
 }
 
 interface Order {
-  paymentForm: string;
+  payment_form: string;
   cart: Product[];
 }
 
@@ -108,13 +108,11 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
   const finishOrder = async (order: Order) => {
     try {
-      console.log(order);
-      const response2 = await api.get('/order');
-      console.log(response2);
-      const response = await api.post('/order/create.php', {"paymentForm": order.paymentForm});
-      
+
+      const response = await api.post('/order/create.php', JSON.stringify(order));
+      console.log(response.data);
       if(response.status === 200){
-        setCart([]);
+        //setCart([]);
       }else{
         toast.error('Erro na finalização do pedido');
       }
