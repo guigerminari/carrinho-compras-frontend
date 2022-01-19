@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { createContext, ReactNode, useContext, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { api } from '../services/api';
 import { Product } from '../types';
@@ -29,7 +30,7 @@ interface CartContextData {
 const CartContext = createContext<CartContextData>({} as CartContextData);
 
 export function CartProvider({ children }: CartProviderProps): JSX.Element {
-
+  let history = useHistory();
   const [cart, setCart] = useState<Product[]>(() => {
     const storagedCart = JSON.parse(localStorage.getItem('@RocketShoes:cart') || '[]');
 
@@ -110,9 +111,12 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
     try {
 
       const response = await api.post('/order/create.php', JSON.stringify(order));
-      console.log(response.data);
+      
       if(response.status === 200){
-        //setCart([]);
+        setCart([]);
+        toast.success('Pedido realizado com sucesso!');
+        
+        history.push("/");
       }else{
         toast.error('Erro na finalização do pedido');
       }

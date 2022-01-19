@@ -8,9 +8,7 @@ export const Conteiner = styled.form`
     }
 
     input {
-        width: 100%;
-        padding: 0 1.5rem;
-        height: 4rem;
+        height: 2rem;
         border-radius: 0.25rem;
         margin-top: 1rem;
 
@@ -18,7 +16,7 @@ export const Conteiner = styled.form`
         background: #e7e9ee;
 
         font-weight: 400;
-        font-size: 1rem;
+        font-size: 3rem;
 
         &::placehoder {
             color: #ddd;

@@ -5,6 +5,7 @@ import { FormEvent, useState } from 'react';
 import { useCart } from '../../hooks/useCart';
 import { formatPrice } from '../../util/format';
 import { ProductTable } from '../../pages/Cart/styles';
+import Select from 'react-select';
 
 Modal.setAppElement('#root');
 
@@ -12,6 +13,12 @@ type FinishOrderProps = {
     isOpen: boolean;
     onRequestClose: () => void;
 }
+
+const paymentFormOptions = [
+    { value: 'cash',    label: 'Cash' },
+    { value: 'credit',  label: 'Credit' },
+    { value: 'debit',   label: 'Debit' }
+  ]
 
 export function FinishOrderModal({isOpen, onRequestClose}: FinishOrderProps){
     const {finishOrder, cart} = useCart();
@@ -80,12 +87,7 @@ export function FinishOrderModal({isOpen, onRequestClose}: FinishOrderProps){
                     ))}
                     </tbody>
                 </ProductTable>
-                <input 
-                    type="text"
-                    placeholder='Forma de Pagamento'
-                    value={payment_form}
-                    onChange={event => setPaymentForm(event.target.value)}
-                />
+                <Select placeholder='Forma de Pagamento' options={paymentFormOptions} onChange={event => setPaymentForm((event?.value ? event.value : ''))} />
                 <Total>
                     <span>TOTAL</span>
                     <strong>{formatPrice(total)}</strong>
